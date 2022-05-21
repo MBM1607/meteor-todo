@@ -71,7 +71,7 @@ const App = () => {
             <>
               <div className='user'>
                 <span className='name'>
-                  👤 {user.username}
+                  👤 {user.username || user.profile.name}
                 </span>
 
                 <button

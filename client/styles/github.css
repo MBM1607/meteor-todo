@@ -1,0 +1,25 @@
+.github-btn {
+  border: 2px solid #e1e5f0;
+  background-color: #0d1117;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.github-btn svg {
+  margin-left: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .github-btn {
+    background-color: white;
+  }
+
+  .github-btn svg {
+    fill: #0d1117;
+  }
+}
+
+.github-btn > div {
+  margin-left: 4px;
+}
