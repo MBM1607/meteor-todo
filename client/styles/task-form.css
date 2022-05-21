@@ -1,0 +1,22 @@
+.task-form {
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 2px solid;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.task-form > input {
+  border: 1px solid #aaa;
+  margin-right: 16px;
+}
+
+.task-form > input:focus {
+  outline: 0;
+}
+
+.task-form > button {
+  min-width: 100px;
+  height: 95%;
+  margin-top: 0;
+}

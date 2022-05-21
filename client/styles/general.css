@@ -1,0 +1,28 @@
+:root {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 10px;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-header {
+  text-overflow: ellipsis;
+}
+
+.app-bar {
+  display: flex;
+  justify-content: space-between;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
