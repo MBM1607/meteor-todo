@@ -1,21 +1,19 @@
 import { Meteor } from 'meteor/meteor';
 import { useTracker } from 'meteor/react-meteor-data';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import TasksCollection from '../db/TasksCollection';
+import LoginForm from './LoginForm';
 import Task from './Task';
 import TaskForm from './TaskForm';
-import LoginForm from './LoginForm';
-import { TasksCollection } from '/imports/api/TasksCollection';
 
 
-const toggleChecked = ({ _id, isChecked }) => {
-  TasksCollection.update(_id, {
-    $set: {
-      isChecked: !isChecked
-    }
-  })
-};
+const toggleChecked = ({ _id, isChecked }) => (
+  Meteor.call('tasks.setIsChecked', _id, !isChecked)
+);
 
-const onDeleteClick = ({ _id }) => TasksCollection.remove(_id);
+const onDeleteClick = ({ _id }) => (
+  Meteor.call('tasks.remove', _id)
+);
 
 const hideCompletedFilter = { isChecked: { $ne: true } };
 
@@ -30,21 +28,34 @@ const App = () => {
     ...userFilter
   };
 
-  const tasks = useTracker(() => {
-    if (!user) return [];
+  const { tasks, pendingTasksCount, isLoading } = useTracker(() => {
+    const noDataAvailable = {
+      tasks: [],
+      pendingTasksCount: 0
+    };
 
-    return TasksCollection.find(
+    if (!Meteor.user()) return noDataAvailable;
+
+    const handler = Meteor.subscribe('tasks');
+
+    if (!handler.ready()) {
+      return {
+        ...noDataAvailable,
+        isLoading: true
+      };
+    }
+
+    const tasks = TasksCollection.find(
       hideCompleted ? pendingOnlyFilter : userFilter,
-      { sort: { createdAt: -1 } }
-    )
-      .fetch();
+      {
+        sort: { createdAt: -1 },
+      }
+    ).fetch();
+    const pendingTasksCount = TasksCollection.find(pendingOnlyFilter).count();
+
+    return { tasks, pendingTasksCount };
   });
 
-  const pendingTasksCount = useTracker(() => {
-    if (!user) return 0;
-
-    TasksCollection.find(hideCompletedFilter).count();
-  });
 
   const pendingTaskTitle = `📒 To Do List ${pendingTasksCount ? ` (${pendingTasksCount})` : ''}`;
 
@@ -82,13 +93,15 @@ const App = () => {
                 </button>
               </div>
 
-              <TaskForm user={user} />
+              <TaskForm />
 
               <div className='filter'>
                 <button onClick={() => setHideCompleted(!hideCompleted)}>
                   {hideCompleted ? 'Show All' : 'Hide Completed'}
                 </button>
               </div>
+
+              {isLoading && <div className='loading'>loading...</div>}
 
               <ul className='tasks'>
                 {
