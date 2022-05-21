@@ -6,7 +6,12 @@ import { TasksCollection } from '/imports/api/TasksCollection';
 
 
 const App = () => {
-  const tasks = useTracker(() => TasksCollection.find({}).fetch());
+  const tasks = useTracker(() => (
+    TasksCollection
+      .find({}, { sort: { createdAt: -1 } })
+      .fetch()
+  ));
+
   return (
     <div>
       <h1>Welcome to Meteor!</h1>
