@@ -23,24 +23,30 @@ const App = () => {
   ));
 
   return (
-    <div>
-      <h1>Welcome to Meteor!</h1>
+    <div className='app'>
+      <header className='app-header'>
+        <div className='app-bar'>
+          <h1>📒 To Do List</h1>
+        </div>
+      </header>
 
-      <TaskForm />
+      <main>
+        <TaskForm />
 
-      <ul>
-        {
-          tasks.map(task => (
-            <Task
-              key={task._id}
-              task={task}
-              onCheckboxClick={toggleChecked}
-              onDeleteClick={onDeleteClick}
-            />
-          ))
-        }
-      </ul>
-    </div>
+        <ul className='tasks'>
+          {
+            tasks.map(task => (
+              <Task
+                key={task._id}
+                task={task}
+                onCheckboxClick={toggleChecked}
+                onDeleteClick={onDeleteClick}
+              />
+            ))
+          }
+        </ul>
+      </main>
+    </div >
   )
 };
 

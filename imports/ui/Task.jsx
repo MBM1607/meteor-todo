@@ -13,8 +13,10 @@ const Task = ({ task, onCheckboxClick, onDeleteClick }) => {
         {task.text}
       </span>
 
-      <button onClick={() => onDeleteClick(task)}>
-        &times;
+      <button
+        onClick={() => onDeleteClick(task)}
+      >
+        ⌫
       </button>
     </li>
   );
