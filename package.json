@@ -1,5 +1,5 @@
 {
-  "name": "simple-todos-react",
+  "name": "Meteor-Todo",
   "private": true,
   "scripts": {
     "start": "meteor run",
