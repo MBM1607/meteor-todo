@@ -1,5 +1,5 @@
 import { useTracker } from 'meteor/react-meteor-data';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Task from './Task';
 import TaskForm from './TaskForm';
 import { TasksCollection } from '/imports/api/TasksCollection';
@@ -15,23 +15,49 @@ const toggleChecked = ({ _id, isChecked }) => {
 
 const onDeleteClick = ({ _id }) => TasksCollection.remove(_id);
 
+const hideCompletedFilter = { isChecked: { $ne: true } };
+
 const App = () => {
+  const [hideCompleted, setHideCompleted] = useState(false);
+
   const tasks = useTracker(() => (
     TasksCollection
-      .find({}, { sort: { createdAt: -1 } })
+      .find(
+        hideCompleted ? hideCompletedFilter : {},
+        { sort: { createdAt: -1 } }
+      )
       .fetch()
   ));
+
+  const pendingTasksCount = useTracker(() =>
+    TasksCollection.find(hideCompletedFilter).count()
+  );
+
+  const pendingTaskTitle = `📒 To Do List ${pendingTasksCount ? ` (${pendingTasksCount})` : ''}`;
+
+  // Update page title whenever new added
+  useEffect(() => {
+    document.title = pendingTaskTitle;
+  }, [pendingTaskTitle])
 
   return (
     <div className='app'>
       <header className='app-header'>
         <div className='app-bar'>
-          <h1>📒 To Do List</h1>
+          <h1>
+            {pendingTaskTitle}
+          </h1>
         </div>
       </header>
 
       <main>
         <TaskForm />
+
+        <div className='filter'>
+          <button onClick={() => setHideCompleted(!hideCompleted)}>
+            {hideCompleted ? 'Show All' : 'Hide Completed'}
+          </button>
+        </div>
 
         <ul className='tasks'>
           {
